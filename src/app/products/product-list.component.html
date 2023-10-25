@@ -1,0 +1,74 @@
+<div class='card'>
+  <div class='card-header'>
+    {{pageTitle}}
+  </div>
+  <div class='card-body'>
+    <div class='row'>
+      <div class='col-md-2'>Filter by:</div>
+      <div class='col-md-4'>
+        <!--        data binding using ngModel - requires importing FormsModule-->
+        <input type='text'
+               [(ngModel)]='listFilter'/>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-md-6'>
+        <h4>Filtered by: {{listFilter}}</h4>
+      </div>
+    </div>
+    <div class='table-responsive'>
+      <table class='table'
+             *ngIf='products.length'>
+        <thead>
+        <tr>
+          <th>
+            <!--              the event is held within (), in this case it is click-->
+            <button class='btn btn-primary'
+                    (click)='toggleImage()'>
+              <!--                if image showing show hide images, else have show images on button-->
+              {{showImage ? 'Hide' : 'Show'}} Image
+            </button>
+          </th>
+          <th>Product</th>
+          <th>Code</th>
+          <th>Available</th>
+          <th>Price</th>
+          <th>5 Star Rating</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--        ngFor on the new filtered list -->
+        <tr *ngFor='let product of filteredProducts'>
+          <td>
+            <!--              use binding for each product-list property-->
+            <img *ngIf='showImage'
+                 [src]='product.imageUrl'
+                 [title]='product.productName'
+                 [style.width.px]='imageWidth'
+                 [style.margin.px]='imageMargin'>
+            <!--              use interpolation for each property of product-->
+          </td>
+          <td>
+            <!--            first value of array is the route, the second parameter is the value-->
+            <!--            'products/:id'-->
+            <a [routerLink]="['/products', product.productId]">
+              {{ product.productName }}
+            </a>
+          </td>
+          <td>{{ product.productCode | lowercase | convertToSpaces: '-' }}</td>
+          <td>{{ product.releaseDate }}</td>
+          <td>{{ product.price | currency:'USD':'symbol':'1.2-2' }}</td>
+          <!--            use the nested component as a directive, property binding to pass data-->
+          <!--            and event binding to respond to events, $event to access the event data from the nested component-->
+          <td>
+            <pm-star [rating]="product.starRating"
+                     (ratingClicked)="onRatingClicked($event)">
+            </pm-star>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
